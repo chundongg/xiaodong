@@ -30,6 +30,8 @@ __version__ = 0.1
 __author__ = "葱油饼"
 __name__ = "小鼕"
 
+
+
 @bcc.receiver("FriendMessage")
 async def friend_message_listener(app: GraiaMiraiApplication, friend: Friend):
     #向好友发送文字信息
@@ -52,13 +54,18 @@ async def group_message_listener(app: GraiaMiraiApplication, group: Group):
 
 @bcc.receiver("GroupMessage", dispatchers=[
     # 注意是 dispatcher, 不要和 headless_decorator 混起来
-    Kanata([FullMatch("#随机饭店")])
+    Kanata([FullMatch("#随机吃饭")])
 ])
 async def group_message_listener(app: GraiaMiraiApplication, group: Group):
-    await app.sendGroupMessage(group,MessageChain.create([
-        Plain("今天该吃：{}".format(random.randint(7,22)) )  
-    ]))
-
+    qingfan = random.randint(1,1001)
+    if qingfan == 2:
+        await app.sendGroupMessage(group,MessageChain.create([
+            Plain("今天该吃：{},今天国民请吃饭".format(random.choice(["豆浆记忆","一楼打菜","香锅","饺子","重庆面","黄焖鸡","早餐店左","烤盘","淮南牛肉面","石锅","拉面","烤肉拌饭","清食","水果捞","二楼打菜","汉堡","烤鸭","麻辣烫"])))  
+        ]))
+    else:
+        await app.sendGroupMessage(group,MessageChain.create([
+            Plain("今天该吃：{}".format(random.choice(["豆浆记忆","一楼打菜","香锅","饺子","重庆面","黄焖鸡","早餐店左","烤盘","淮南牛肉面","石锅","拉面","烤肉拌饭","清食","水果捞","二楼打菜","汉堡","烤鸭","麻辣烫"])))  
+        ]))
 @bcc.receiver("GroupMessage")
 async def group_message_handler(
     message: MessageChain,
