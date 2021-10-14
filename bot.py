@@ -1,10 +1,13 @@
+from graia.application.group import Group
 from graia.broadcast import Broadcast
 from graia.application import GraiaMiraiApplication, Session
 from graia.application.message.chain import MessageChain
 import asyncio
 
-from graia.application.message.elements.internal import Plain
+from graia.application.message.elements.internal import Image, Plain
 from graia.application.friend import Friend
+from graia.application.message.parser.kanata import Kanata
+from graia.application.message.parser.signature import FullMatch
 
 loop = asyncio.get_event_loop()
 
@@ -19,10 +22,28 @@ app = GraiaMiraiApplication(
     )
 )
 
+__version__ = 0.1
+__author__ = "葱油饼"
+__name__ = "小鼕"
+
 @bcc.receiver("FriendMessage")
 async def friend_message_listener(app: GraiaMiraiApplication, friend: Friend):
+    #向好友发送文字信息
     await app.sendFriendMessage(friend, MessageChain.create([
         Plain("你好，我是小鼕！我于今天出生了！")
+    ]))
+    #向好友发送图片
+    await app.sendFriendMessage(friend, MessageChain.create([
+        Image.fromLocalFile("./images/xiaodong/xiaocd.jpg")
+    ]))
+
+@bcc.receiver("GroupMessage", dispatchers=[
+    # 注意是 dispatcher, 不要和 headless_decorator 混起来
+    Kanata([FullMatch("#课表")])
+])
+async def group_message_listener(app: GraiaMiraiApplication, group: Group):
+    await app.sendGroupMessage(group,MessageChain.create([
+        Image.fromLocalFile("./images/kebiao/kebiao.jpg")    
     ]))
 
 app.launch_blocking()
