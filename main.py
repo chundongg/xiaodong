@@ -10,7 +10,7 @@ saya = Saya(broadcast)
 saya.install_behaviours(BroadcastBehaviour(broadcast))
 
 with saya.module_context():
-    saya.require("./modules/modules_kebiao.py")
+    saya.require("modules.modules_kebiao")
 
 try:
     loop.run_forever()
