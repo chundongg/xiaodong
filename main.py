@@ -30,6 +30,6 @@ with saya.module_context():
     saya.require("modules.modules_kebiao")
 
 try:
-    loop.run_forever()
+    app.launch_blocking()
 except KeyboardInterrupt:
     exit()
