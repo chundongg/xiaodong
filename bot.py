@@ -32,6 +32,12 @@ __author__ = "葱油饼"
 __name__ = "小鼕"
 
 
+@bcc.receiver("GroupMessage")
+async def help(app: GraiaMiraiApplication, group: Group,message: MessageChain):
+    if message.asDisplay().startswith("#help"):
+        await app.sendGroupMessage(group,message.create([
+            Plain("你好，小鼕指令集:\n============\n#课表 - 获取课表\n#随机吃饭 - 小鼕帮你选择饭店\n#帮我选择 选择A 选择B ..\n- 小鼕帮你从选择A与选择B以及其他选择中选择")
+        ]))
 
 @bcc.receiver("FriendMessage")
 async def friend_message_listener(app: GraiaMiraiApplication, friend: Friend):
