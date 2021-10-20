@@ -19,11 +19,11 @@ async def module_listener(event: SayaModuleInstalled):
 
 @channel.use(
     ListenerSchema(
-        listening_events=[SayaModuleInstalled]
+        listening_events=[GroupMessage]
         )
     )
 async def module_kebiao_group(event: GroupMessage,app: GraiaMiraiApplication, group: Group):
-    print("课表模块被触发!")
+    print(f"{event.type}:课表模块被触发!")
     await app.sendGroupMessage(group,MessageChain.create([
         Plain("你好"),Image.fromLocalFile("../images/kebiao/kebiao.jpg")    
     ]))
