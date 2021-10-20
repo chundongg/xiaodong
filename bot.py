@@ -6,6 +6,11 @@ import asyncio
 import random
 import re
 
+import os
+import requests
+from io import BytesIO
+from PIL import Image, ImageDraw, ImageFont
+
 from graia.application.message.elements.internal import Image, Plain
 from graia.application.friend import Friend
 from graia.application.message.parser.kanata import Kanata
@@ -36,7 +41,7 @@ __name__ = "小鼕"
 async def help(app: GraiaMiraiApplication, group: Group,message: MessageChain):
     if message.asDisplay().startswith("#help"):
         await app.sendGroupMessage(group,message.create([
-            Plain("你好，小鼕指令集:\n============\n#课表 - 获取课表\n#随机吃饭 - 小鼕帮你选择饭店\n#帮我选择 选择A 选择B ..\n- 小鼕帮你从选择A与选择B以及其他选择中选择")
+            Plain("你好，小鼕指令集:\n============\n#课表 - 获取课表\n#随机吃饭 - 小鼕帮你选择饭店\n#帮我选择 选择A 选择B ..\n- 小鼕帮你从选择A与选择B以及其他选择中选择\n#随机二次元 - 不可以色色")
         ]))
 
 @bcc.receiver("FriendMessage")
@@ -105,5 +110,83 @@ async def group_message_handler(
         await app.sendGroupMessage(group, MessageChain.create([
             Plain("小鼕帮你选择：{}".format(random.choice(word)))
         ]))
+
+@bcc.receiver("GroupMessage",dispatchers=[
+    Kanata([FullMatch("#随机二次元")])
+])
+async def randompic(
+    message:MessageChain,
+    app: GraiaMiraiApplication,
+    group:Group
+):
+
+#http://api.mtyqx.cn/api/random.php
+#https://img.xjh.me/random_img.php (850+) 出处(・ω・)ノ
+#http://www.dmoe.cc/random.php（1000+）出处(・ω・)ノ
+#https://acg.yanwz.cn/api.php (400+) 出处(・ω・)ノ
+#https://img.paulzzh.tech/touhou/random (东方的随机图，43000+)出处(・ω・)ノ
+#https://acg.toubiec.cn/random.php（1000+） 出处(・ω・)ノ 作者开源了 这篇博客里有介绍和源码 先蟹蟹大佬了[项目]随机二次元图片API-已经开源
+
+    await app.sendGroupMessage(group,message.create([
+        Plain("正在下载中，请稍等")
+    ]))
+    await app.sendGroupMessage(group,message.create([
+        Image.fromNetworkAddress("http://www.dmoe.cc/random.php")
+    ]))
+
+def picture_spell():
+    # 获取到图片格式的文件的路径，此路径为图片所在的文件夹
+    response = requests.get("http://www.dmoe.cc/random.php")
+    image = Image.open(BytesIO(response.content))
+    image.save('D:/xiaochun/xiaochun/images/qiandao/get.jpg')
+    path = "D:/xiaochun/xiaochun/images/qiandao"
+    result = []
+    file_name_list = os.listdir(path)
+    for file in file_name_list:
+        if os.path.isfile(os.path.join(path, file)):
+            if file.split(".")[1] in ['jpg', 'png']:
+                result.append(os.path.join(path, file))
+    print(result)
+
+    ims = list()
+    for fn in result:
+        ims.append(Image.open(fn))
+
+    # 获取各自的宽,高
+    width_one, height_one = ims[0].size
+    width_two, height_two = ims[1].size
+    print(width_one, height_one, width_two, height_two)
+
+    # 将两张图片转化为相同宽度的图片
+    new_img_one = ims[0].resize((1920, height_one), Image.BILINEAR)
+    new_img_two = ims[1].resize((1920, height_two), Image.BILINEAR)
+
+    # 创建一个新图片,定义好宽和高
+    target_images = Image.new('RGB', (1920, height_one + height_two))
+    if height_one < height_two:
+        target_images.paste(new_img_one, (0, 0, 1920, height_one))
+        target_images.paste(new_img_two, (0, height_one, 1920, height_one + height_two))
+    else:
+        target_images.paste(new_img_two, (0, 0, 1920, height_two))
+        target_images.paste(new_img_one, (0, height_two, 1920, height_one + height_two))
+    
+    # 注意存储路径
+    target_images.save("D:/Users/Administrator/Desktop/result.png")
+    draw = ImageDraw.Draw(target_images)
+    fnt = ImageFont.truetype(r'C:\Windows\Fonts\simkai.ttf',72)
+    draw.text((target_images.size[0]/14,(target_images.size[1]/14)*13),user_dayli_text,fill='black',font=fnt)
+    target_images.save("D:/Users/Administrator/Desktop/file.png")
+
+@bcc.receiver("GroupMessage",dispatchers=[
+    Kanata([FullMatch("#签到")])
+])
+async def qiandao(
+    message:MessageChain,
+    app: GraiaMiraiApplication,
+    group:Group
+):
+    await app.sendGroupMessage(group,message.create([
+        
+    ]))
 
 app.launch_blocking()
