@@ -94,7 +94,7 @@ async def group_message_handler(
     app: GraiaMiraiApplication,
     group: Group, member: Member,
 ):
-    if message.asDisplay().startswith("#帮我选择"):
+    if message.asDisplay().startswith("#帮我选择 "):
         word = re.sub("[^\w]", " ", message.asDisplay().replace("#帮我选择 ","")).split()
         await app.sendGroupMessage(group, MessageChain.create([
             Plain("小鼕帮你选择：{}".format(random.choice(word)))
