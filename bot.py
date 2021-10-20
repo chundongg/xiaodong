@@ -4,6 +4,7 @@ from graia.application import GraiaMiraiApplication, Session
 from graia.application.message.chain import MessageChain
 import asyncio
 import random
+import re
 
 from graia.application.message.elements.internal import Image, Plain
 from graia.application.friend import Friend
@@ -85,6 +86,18 @@ async def group_message_handler(
         await app.sendGroupMessage(group, MessageChain.create([
             #At(member.id)输出报错
             Image.fromLocalFile("./images/kebiao/kebiao.jpg") ,Plain("执行完毕.")
+        ]))
+
+@bcc.receiver("GroupMessage")
+async def group_message_handler(
+    message: MessageChain,
+    app: GraiaMiraiApplication,
+    group: Group, member: Member,
+):
+    if message.asDisplay().startswith("#帮我选择"):
+        word = re.sub("[^\w]", " ", message.asDisplay().replace("#帮我选择 ","")).split()
+        await app.sendGroupMessage(group, MessageChain.create([
+            Plain("小鼕帮你选择：{}".format(random.choice(word)))
         ]))
 
 app.launch_blocking()
