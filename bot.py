@@ -38,7 +38,7 @@ __name__ = "小鼕"
 async def help(app: GraiaMiraiApplication, group: Group,message: MessageChain):
     if message.asDisplay().startswith("#help"):
         await app.sendGroupMessage(group,message.create([
-            Plain("你好，小鼕指令集:\n============\n#课表 - 获取课表\n#随机吃饭 - 小鼕帮你选择饭店\n#帮我选择 选择A 选择B ..\n- 小鼕帮你从选择A与选择B以及其他选择中选择\n#随机二次元 - 不可以色色")
+            Plain("你好，小鼕指令集:\n============\n#help - 打开小鼕指令集\n#摇签 - 小鼕摇签中~\n#课表 - 获取课表\n#随机吃饭 - 小鼕帮你选择饭店\n#帮我选择 选择A 选择B ..\n- 小鼕帮你从选择A与选择B以及其他选择中选择\n#随机二次元 - 不可以色色")
         ]))
 
 @bcc.receiver("FriendMessage")
@@ -132,7 +132,7 @@ async def randompic(
     ]))
 
 @bcc.receiver("GroupMessage",dispatchers=[
-    Kanata([FullMatch("#签到")])
+    Kanata([FullMatch("#摇签")])
 ])
 async def qiandao(
     message:MessageChain,
