@@ -6,10 +6,7 @@ import asyncio
 import random
 import re
 
-import os
-import requests
-from io import BytesIO
-from PIL import Image, ImageDraw, ImageFont
+from lib.qiandao import picture_spell
 
 from graia.application.message.elements.internal import Image, Plain
 from graia.application.friend import Friend
@@ -134,59 +131,20 @@ async def randompic(
         Image.fromNetworkAddress("http://www.dmoe.cc/random.php")
     ]))
 
-def picture_spell():
-    # 获取到图片格式的文件的路径，此路径为图片所在的文件夹
-    response = requests.get("http://www.dmoe.cc/random.php")
-    image = Image.open(BytesIO(response.content))
-    image.save('D:/xiaochun/xiaochun/images/qiandao/get.jpg')
-    path = "D:/xiaochun/xiaochun/images/qiandao"
-    result = []
-    file_name_list = os.listdir(path)
-    for file in file_name_list:
-        if os.path.isfile(os.path.join(path, file)):
-            if file.split(".")[1] in ['jpg', 'png']:
-                result.append(os.path.join(path, file))
-    print(result)
-
-    ims = list()
-    for fn in result:
-        ims.append(Image.open(fn))
-
-    # 获取各自的宽,高
-    width_one, height_one = ims[0].size
-    width_two, height_two = ims[1].size
-    print(width_one, height_one, width_two, height_two)
-
-    # 将两张图片转化为相同宽度的图片
-    new_img_one = ims[0].resize((1920, height_one), Image.BILINEAR)
-    new_img_two = ims[1].resize((1920, height_two), Image.BILINEAR)
-
-    # 创建一个新图片,定义好宽和高
-    target_images = Image.new('RGB', (1920, height_one + height_two))
-    if height_one < height_two:
-        target_images.paste(new_img_one, (0, 0, 1920, height_one))
-        target_images.paste(new_img_two, (0, height_one, 1920, height_one + height_two))
-    else:
-        target_images.paste(new_img_two, (0, 0, 1920, height_two))
-        target_images.paste(new_img_one, (0, height_two, 1920, height_one + height_two))
-    
-    # 注意存储路径
-    target_images.save("D:/Users/Administrator/Desktop/result.png")
-    draw = ImageDraw.Draw(target_images)
-    fnt = ImageFont.truetype(r'C:\Windows\Fonts\simkai.ttf',72)
-    draw.text((target_images.size[0]/14,(target_images.size[1]/14)*13),user_dayli_text,fill='black',font=fnt)
-    target_images.save("D:/Users/Administrator/Desktop/file.png")
-
 @bcc.receiver("GroupMessage",dispatchers=[
     Kanata([FullMatch("#签到")])
 ])
 async def qiandao(
     message:MessageChain,
     app: GraiaMiraiApplication,
-    group:Group
+    group:Group,member:Member,
 ):
     await app.sendGroupMessage(group,message.create([
-        
+        Plain("正在摇签中~~")
+    ]))
+    picture_spell(member.id,member.name)
+    await app.sendGroupMessage(group,message.create([
+        Image.fromLocalFile("D:/Users/Administrator/Desktop/file.png")
     ]))
 
 app.launch_blocking()
