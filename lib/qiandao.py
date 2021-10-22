@@ -52,10 +52,14 @@ def picture_spell(id,name):
             li = list(yiyan)
             li.insert(48,'\n')
             yiyan = ''.join(li)
-            if len (yiyan) > 73 :
+            if len (yiyan) > 72 :
                 li = list(yiyan)
-                li.insert(73,'\n')
+                li.insert(96,'\n')
                 yiyan = ''.join(li)
+                if len (yiyan) > 121 :
+                    li = list(yiyan)
+                    li.insert(121,'\n')
+                    yiyan = ''.join(li)
     draw.text((target_images.size[0]/14,(target_images.size[1]/14)*8),"@"+name,fill='black',font=fnt)
     draw.text((target_images.size[0]/14*12,(target_images.size[1]/14)*8),time.strftime("%m/%d", time.localtime()),fill='black',font=fnt)
     draw.text((target_images.size[0]/14,(target_images.size[1]/14)*9),yiyan,fill='black',font=fnt)
