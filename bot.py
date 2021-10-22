@@ -7,6 +7,7 @@ import random
 import re
 
 from lib.qiandao import picture_spell
+from lib.mcserver_status import mcserver_status
 
 from graia.application.message.elements.internal import Image, Plain
 from graia.application.friend import Friend
@@ -38,7 +39,7 @@ __name__ = "小鼕"
 async def help(app: GraiaMiraiApplication, group: Group,message: MessageChain):
     if message.asDisplay().startswith("#help"):
         await app.sendGroupMessage(group,message.create([
-            Plain("你好，小鼕指令集:\n============\n#help - 打开小鼕指令集\n#摇签 - 小鼕摇签中~\n#课表 - 获取课表\n#随机吃饭 - 小鼕帮你选择饭店\n#帮我选择 选择A 选择B ..\n- 小鼕帮你从选择A与选择B以及其他选择中选择\n#随机二次元 - 不可以色色")
+            Plain("你好，小鼕指令集:\n============\n#help - 打开小鼕指令集\n#摇签 - 小鼕摇签中~\n#课表 - 获取课表\n#随机吃饭 - 小鼕帮你选择饭店\n#帮我选择 选择A 选择B ..\n- 小鼕帮你从选择A与选择B以及其他选择中选择\n#随机二次元 - 不可以色色\n#服务器 - 查询mc服务器信息")
         ]))
 
 @bcc.receiver("FriendMessage")
@@ -146,5 +147,30 @@ async def qiandao(
     await app.sendGroupMessage(group,message.create([
         Image.fromLocalFile("D:/Users/Administrator/Desktop/file.png")
     ]))
+
+@bcc.receiver("GroupMessage")
+async def mcserverstatus(
+    message:MessageChain,
+    app: GraiaMiraiApplication,
+    group:Group,
+):
+    if message.asDisplay().startswith("#服务器 "):
+        word = re.sub(" ", " ", message.asDisplay().replace("#服务器 ","")).split()
+        print(word)
+        if len(word) == 1:
+            port1 = ['25565']
+        else:
+            port1 = word[1:]
+        try:
+            mcserver_status_out = mcserver_status(str(word[:1])[2:-2],str(port1)[2:-2])
+        except:
+            await app.sendGroupMessage(group,message.create([
+                Plain("获取数据错误，请检查输入信息\n使用方法:#服务器 ip 端口(可不填)")
+            ]))
+        else:
+            mcserver_status_out = mcserver_status(str(word[:1])[2:-2],str(port1)[2:-2])
+            await app.sendGroupMessage(group,message.create([
+                Plain("服务器{},最大人数{},在线{},在线人员:{}".format((mcserver_status_out["server"])["name"],(mcserver_status_out["players"])["max"],(mcserver_status_out["players"])["now"],(mcserver_status_out["players"])["sample"]))
+            ]))
 
 app.launch_blocking()
