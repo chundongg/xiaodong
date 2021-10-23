@@ -44,21 +44,21 @@ def picture_spell(id,name):
     signText = r.text[r.text.find("signText")+11:r.text.find("unSignText")-3]
     xiaodong = "随机生成，请勿迷信\n           by@小鼕"
     yiyan = r1.text[r1.text.find("data")+7:-2]
-    if len(yiyan) > 23 :
+    if len(yiyan) > 24 :
         li = list(yiyan)
-        li.insert(23,'\n')
+        li.insert(24,'\n')
         yiyan = ''.join(li)
-        if len (yiyan) > 47 :
+        if len (yiyan) > 49 :
             li = list(yiyan)
-            li.insert(47,'\n')
+            li.insert(49,'\n')
             yiyan = ''.join(li)
-            if len (yiyan) > 71 :
+            if len (yiyan) > 74 :
                 li = list(yiyan)
-                li.insert(71,'\n')
+                li.insert(74,'\n')
                 yiyan = ''.join(li)
-                if len (yiyan) > 95 :
+                if len (yiyan) > 99 :
                     li = list(yiyan)
-                    li.insert(95,'\n')
+                    li.insert(99,'\n')
                     yiyan = ''.join(li)
     draw.text((target_images.size[0]/14,(target_images.size[1]/14)*8),"@"+name,fill='black',font=fnt)
     draw.text((target_images.size[0]/14*12,(target_images.size[1]/14)*8),time.strftime("%m/%d", time.localtime()),fill='black',font=fnt)
