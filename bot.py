@@ -196,7 +196,7 @@ async def groupsudoku(
         word = re.sub("[^\w]", " ", message.asDisplay().replace("#数独 ","")).split()
         if len(word) == 1:
             if word[0] in ["easy","normal","hard","veryhard"]:
-                sudoku(word)
+                sudoku(word[0])
                 await app.sendGroupMessage(group,message.create([
                     Image.fromLocalFile("D:/Users/Administrator/Desktop/shudu1.PNG")
                 ]))
