@@ -14,7 +14,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-images/
 lib64/
 parts/
 sdist/
@@ -113,3 +112,8 @@ dmypy.json
 # Pyre type checker
 .pyre/
 play.ipynb
+images/qiandao.zip
+images/kebiao/kebiao.jpg
+images/qiandao/background.png
+images/qiandao/get.jpg
+images/xiaodong/xiaocd.jpg
