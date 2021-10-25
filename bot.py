@@ -9,6 +9,8 @@ import re
 from lib.qiandao import picture_spell
 from lib.mcserver_status import mcserver_status
 from lib.sudoku import sudoku
+from lib.xinhuazidian import xinhuazidian
+from lib.topnews import topnews_dayli
 
 from graia.application.message.elements.internal import Image, Plain
 from graia.application.friend import Friend
@@ -40,18 +42,20 @@ __name__ = "小鼕"
 async def help(app: GraiaMiraiApplication, group: Group,message: MessageChain):
     if message.asDisplay().startswith("#help"):
         await app.sendGroupMessage(group,message.create([
-            Plain("你好，小鼕指令集:\n============\n#help - 打开小鼕指令集\n#摇签 - 小鼕摇签中~\n#课表 - 获取课表\n#随机吃饭 - 小鼕帮你选择饭店\n#帮我选择 选择A 选择B ..\n- 小鼕帮你从选择A与选择B以及其他选择中选择\n#随机二次元 - 不可以色色\n#服务器 - 查询mc服务器信息\n#掷骰子 - 掷骰子\n#数独 - 让小鼕出道数独题！")
+            Plain("你好，小鼕指令集:\n============\n#help - 打开小鼕指令集\n#摇签 - 小鼕摇签中~\n#课表 - 获取课表\n#随机吃饭 - 小鼕帮你选择饭店\n#帮我选择 选择A 选择B ..\n- 小鼕帮你从选择A与选择B以及其他选择中选择\n#随机二次元 - 不可以色色\n#服务器 - 查询mc服务器信息\n#掷骰子 - 掷骰子\n#数独 - 让小鼕出道数独题！\n#字典 - 查看新华字典\n#新闻 - 各种新闻\n  @小鼕by@葱油饼")
         ]))
 
-@bcc.receiver("FriendMessage")
+@bcc.receiver("FriendMessage",dispatchers=[
+    Kanata([FullMatch("老婆")])
+])
 async def friend_message_listener(app: GraiaMiraiApplication, friend: Friend):
     #向好友发送文字信息
     await app.sendFriendMessage(friend, MessageChain.create([
-        Plain("你好，我是小鼕！我于今天出生了！")
+        Plain("你好，我是小鼕！")
     ]))
     #向好友发送图片
     await app.sendFriendMessage(friend, MessageChain.create([
-        Image.fromLocalFile("./images/xiaodong/xiaocd.jpg")
+        Image.fromLocalFile("./images/laopo/neko_372.jpg")
     ]))
 
 @bcc.receiver("GroupMessage", dispatchers=[
@@ -198,7 +202,7 @@ async def groupsudoku(
             if word[0] in ["easy","normal","hard","veryhard"]:
                 sudoku(word[0])
                 await app.sendGroupMessage(group,message.create([
-                    Image.fromLocalFile("D:/Users/Administrator/Desktop/shudu1.PNG")
+                    Plain(member.name),Image.fromLocalFile("D:/Users/Administrator/Desktop/shudu1.PNG")
                 ]))
             else:
                 await app.sendGroupMessage(group,message.create([
@@ -208,5 +212,70 @@ async def groupsudoku(
             await app.sendGroupMessage(group,message.create([
                 Plain("参数错误，使用方法：\n#数独 难度（easy,normal,hard,veryhard）")
             ]))
+
+@bcc.receiver("GroupMessage")
+async def xinhuazidian1(
+    message:MessageChain,
+    app: GraiaMiraiApplication,
+    group:Group,
+):
+    if message.asDisplay().startswith("#字典 "):
+        word = re.sub("[^\w]", " ", message.asDisplay().replace("#字典 ","")).split()
+        if len(word) == 1:
+            try:
+                word_out = xinhuazidian(word[0])
+                await app.sendGroupMessage(group,message.create([
+                    Plain(word_out)
+                ]))
+            except:
+                await app.sendGroupMessage(group,message.create([
+                    Plain("参数错误，请检查所需解字;使用方法：\n#字典 需要查的字")
+                ]))
+        else:
+            await app.sendGroupMessage(group,message.create([
+                Plain("参数错误，多个参数;使用方法：\n#字典 需要查的字")
+            ]))
+
+@bcc.receiver("GroupMessage")
+async def topnews(
+    message:MessageChain,
+    app: GraiaMiraiApplication,
+    group:Group,
+):
+    if message.asDisplay().startswith("#新闻 "):
+        word = re.sub("[^\w]", " ", message.asDisplay().replace("#新闻 ","")).split()
+        if len(word) == 1:
+            if word[0] in ["guonei","guoji","yule","tiyu","junshi","keji","caijing","shishang","youxi","qiche","jiankang"]:
+                try:
+                    word_out = topnews_dayli(word[0])
+                    await app.sendGroupMessage(group,message.create([
+                        Plain(word_out)
+                    ]))
+                except:
+                    await app.sendGroupMessage(group,message.create([
+                        Plain("出现错误#0，使用方法：\n#新闻 类型（可不填）\n类型:guonei(国内),guoji(国际),yule(娱乐),tiyu(体育),junshi(军事)\nkeji(科技),caijing(财经),shishang(时尚),youxi(游戏),qiche(汽车),jiankang(健康)")
+                    ]))
+            else:
+                await app.sendGroupMessage(group,message.create([
+                    Plain("新闻类型错误#1，请检查新闻类型\n类型：guonei(国内),guoji(国际),yule(娱乐),tiyu(体育),junshi(军事)\nkeji(科技),caijing(财经),shishang(时尚),youxi(游戏),qiche(汽车),jiankang(健康)")
+                ]))
+        else:
+            await app.sendGroupMessage(group,message.create([
+                Plain("新闻类型错误#2，请检查新闻类型\n类型：guonei(国内),guoji(国际),yule(娱乐),tiyu(体育),junshi(军事)\nkeji(科技),caijing(财经),shishang(时尚),youxi(游戏),qiche(汽车),jiankang(健康)")
+            ]))
+
+@bcc.receiver("GroupMessage",dispatchers=[
+    Kanata([FullMatch("#新闻")])
+])
+async def topnews(
+    message:MessageChain,
+    app: GraiaMiraiApplication,
+    group:Group,
+):
+    word_out = topnews_dayli()
+    await app.sendGroupMessage(group,message.create([
+        Plain(word_out)
+    ]))   
+
 
 app.launch_blocking()
