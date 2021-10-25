@@ -8,6 +8,7 @@ import re
 
 from lib.qiandao import picture_spell
 from lib.mcserver_status import mcserver_status
+from lib.sudoku import sudoku
 
 from graia.application.message.elements.internal import Image, Plain
 from graia.application.friend import Friend
@@ -39,7 +40,7 @@ __name__ = "小鼕"
 async def help(app: GraiaMiraiApplication, group: Group,message: MessageChain):
     if message.asDisplay().startswith("#help"):
         await app.sendGroupMessage(group,message.create([
-            Plain("你好，小鼕指令集:\n============\n#help - 打开小鼕指令集\n#摇签 - 小鼕摇签中~\n#课表 - 获取课表\n#随机吃饭 - 小鼕帮你选择饭店\n#帮我选择 选择A 选择B ..\n- 小鼕帮你从选择A与选择B以及其他选择中选择\n#随机二次元 - 不可以色色\n#服务器 - 查询mc服务器信息\n#掷骰子 - 掷骰子")
+            Plain("你好，小鼕指令集:\n============\n#help - 打开小鼕指令集\n#摇签 - 小鼕摇签中~\n#课表 - 获取课表\n#随机吃饭 - 小鼕帮你选择饭店\n#帮我选择 选择A 选择B ..\n- 小鼕帮你从选择A与选择B以及其他选择中选择\n#随机二次元 - 不可以色色\n#服务器 - 查询mc服务器信息\n#掷骰子 - 掷骰子\n#数独 - 让小鼕出道数独题！")
         ]))
 
 @bcc.receiver("FriendMessage")
@@ -184,5 +185,28 @@ async def dice(
     await app.sendGroupMessage(group,message.create([
         Plain("{},你掷出的骰子为：{}".format(member.name,random.choice(["⚀","⚁","⚂","⚃","⚄","⚅"])))
     ]))
+
+@bcc.receiver("GroupMessage")
+async def groupsudoku(
+    message:MessageChain,
+    app: GraiaMiraiApplication,
+    group:Group,member:Member,
+):
+    if message.asDisplay().startswith("#数独 "):
+        word = re.sub("[^\w]", " ", message.asDisplay().replace("#数独 ","")).split()
+        if len(word) == 1:
+            if word[0] in ["easy","normal","hard","veryhard"]:
+                sudoku(word)
+                await app.sendGroupMessage(group,message.create([
+                    Image.fromLocalFile("D:/Users/Administrator/Desktop/shudu1.PNG")
+                ]))
+            else:
+                await app.sendGroupMessage(group,message.create([
+                    Plain("参数错误，使用方法：\n#数独 难度（easy,normal,hard,veryhard）")
+                ]))
+        else:
+            await app.sendGroupMessage(group,message.create([
+                Plain("参数错误，使用方法：\n#数独 难度（easy,normal,hard,veryhard）")
+            ]))
 
 app.launch_blocking()
