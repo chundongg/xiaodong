@@ -7,7 +7,7 @@ from PIL import Image, ImageDraw, ImageFont
 def picture_spell(id,name):
     # 获取到图片格式的文件的路径，此路径为图片所在的文件夹
     r = requests.get("https://api.fanlisky.cn/api/qr-fortune/get/{}".format(id))
-    r1 = requests.get("https://api.fanlisky.cn/niuren/getSen")
+    r1 = requests.get("https://v1.hitokoto.cn")
     response = requests.get("http://www.dmoe.cc/random.php")
     image = Image.open(BytesIO(response.content))
     image.save('D:/xiaochun/xiaochun/images/qiandao/get.jpg')
@@ -43,7 +43,7 @@ def picture_spell(id,name):
     luckyStar = r.text[r.text.find("luckyStar")+12:r.text.find("signText")-3]
     signText = r.text[r.text.find("signText")+11:r.text.find("unSignText")-3]
     xiaodong = "随机生成，请勿迷信\n           by@小鼕"
-    yiyan = r1.text[r1.text.find("data")+7:-2]
+    yiyan = r1.text[r1.text.find("hitokoto")+11:r1.text.find("type")-3]+"\n——"+r1.text[r1.text.find("from_who")+11:r1.text.find("creator")-3]
     if len(yiyan) > 24 :
         li = list(yiyan)
         li.insert(24,'\n')
