@@ -43,7 +43,7 @@ def picture_spell(id,name):
     luckyStar = r.text[r.text.find("luckyStar")+12:r.text.find("signText")-3]
     signText = r.text[r.text.find("signText")+11:r.text.find("unSignText")-3]
     xiaodong = "随机生成，请勿迷信\n           by@小鼕"
-    yiyan = r1.text[r1.text.find("hitokoto")+11:r1.text.find("type")-3]+"\n——"+r1.text[r1.text.find("from_who")+11:r1.text.find("creator")-3]
+    yiyan = r1.text[r1.text.find("hitokoto")+11:r1.text.find("type")-3]+"\n——"+r1.text[r1.text.find("from_who")+10:r1.text.find("creator")-2]
     if len(yiyan) > 24 :
         li = list(yiyan)
         li.insert(24,'\n')
