@@ -11,6 +11,7 @@ from lib.mcserver_status import mcserver_status
 from lib.sudoku import sudoku
 from lib.xinhuazidian import xinhuazidian
 from lib.topnews import topnews_dayli
+from lib.gushi import get_gushi
 
 from graia.application.message.elements.internal import Image, Plain
 from graia.application.friend import Friend
@@ -277,5 +278,21 @@ async def topnews(
         Plain(word_out)
     ]))   
 
+@bcc.receiver("GroupMessage",dispatchers=[
+    Kanata([FullMatch("#古诗")])
+])
+async def gushi(
+    message:MessageChain,
+    app:GraiaMiraiApplication,
+    group:Group,
+):
+    try:
+        await app.sendGroupMessage(group,message.create([
+            Plain(get_gushi)
+        ]))
+    except:
+        await app.sendGroupMessage(group,message.create([
+            Plain("返回错误！")
+        ]))
 
 app.launch_blocking()
