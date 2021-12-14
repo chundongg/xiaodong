@@ -2,7 +2,7 @@ import requests
 import json
 
 def xinhuazidian(word):
-    r = requests.get("http://v.juhe.cn/xhzd/query?key=5afc554b97cb95ab7a6c646da885d9b5&word={}".format(word))
+    r = requests.get("api".format(word))
     jsontopython = json.loads(r.text)
     word_out = " "
     for i in (jsontopython["result"])["jijie"]:
