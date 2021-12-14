@@ -6,12 +6,12 @@ from PIL import Image, ImageDraw, ImageFont
 
 def picture_spell(id,name):
     # 获取到图片格式的文件的路径，此路径为图片所在的文件夹
-    r = requests.get("https://api.fanlisky.cn/api/qr-fortune/get/{}".format(id))
-    r1 = requests.get("https://v1.hitokoto.cn")
-    response = requests.get("http://www.dmoe.cc/random.php")
+    r = requests.get("api".format(id))
+    r1 = requests.get("api")
+    response = requests.get("api")
     image = Image.open(BytesIO(response.content))
-    image.save('D:/xiaochun/xiaochun/images/qiandao/get.jpg')
-    path = "D:/xiaochun/xiaochun/images/qiandao"
+    image.save('本地文件夹') #本地文件夹
+    path = "本地文件夹" #本地文件夹
     result = []
     file_name_list = os.listdir(path)
     for file in file_name_list:
@@ -38,7 +38,7 @@ def picture_spell(id,name):
     
     # 注意存储路径
     draw = ImageDraw.Draw(target_images)
-    fnt = ImageFont.truetype(r'C:\Windows\Fonts\simkai.ttf',72)
+    fnt = ImageFont.truetype(r'C:\Windows\Fonts\simkai.ttf',72) #字体格式
     fortuneSummary = "今天运势："+r.text[r.text.find("fortuneSummary")+17:r.text.find("luckyStar")-3]
     luckyStar = r.text[r.text.find("luckyStar")+12:r.text.find("signText")-3]
     signText = r.text[r.text.find("signText")+11:r.text.find("unSignText")-3]
@@ -67,4 +67,4 @@ def picture_spell(id,name):
     draw.text((target_images.size[0]/14,(target_images.size[1]/14)*12),luckyStar,fill='black',font=fnt)
     draw.text((target_images.size[0]/14,(target_images.size[1]/14)*13),signText,fill='black',font=fnt)
     draw.text((target_images.size[0]/14*12,(target_images.size[1]/18)*17),xiaodong,fill='black',font=ImageFont.truetype(r'C:\Windows\Fonts\simkai.ttf',28))
-    target_images.save("D:/Users/Administrator/Desktop/file.png")
+    target_images.save("本地文件夹") #存储本地文件夹
