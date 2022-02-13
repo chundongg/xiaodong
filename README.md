@@ -6,4 +6,4 @@
 xiaodong 仅供学习使用，不鼓励、不支持商用  
 # 后续开发
 xiaodong 很多功能借助了很多api，为了避免纠纷，github上xiaodong不提供api
-xiaodong 将在假期进行重大更新
+请转移至☞https://github.com/chundongg/chundong
